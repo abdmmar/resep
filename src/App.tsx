@@ -1,14 +1,18 @@
 import { StrictMode } from "react";
 import { createStore } from "tinybase";
 import { Provider, useCreateStore } from "tinybase/ui-react";
-import {
-	SortedTableInHtmlTable,
-	ValuesInHtmlTable,
-} from "tinybase/ui-react-dom";
 import { Inspector } from "tinybase/ui-react-inspector";
-import { Buttons } from "./Buttons";
+import { MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
+
+import type { RecipeSchema } from "./types";
+import { RecipeForm } from "./RecipeForm";
 
 export const App = () => {
+	function onSubmit(values: RecipeSchema) {
+		console.log(values);
+	}
+
 	const store = useCreateStore(() => {
 		// Create the TinyBase Store and initialize the Store's data
 		return createStore()
@@ -25,31 +29,14 @@ export const App = () => {
 
 	return (
 		<StrictMode>
-			<Provider store={store}>
-				<header>
-					<h1>
-						<img src="/favicon.svg" />
-						TinyBase & React
-					</h1>
-				</header>
-				<Buttons />
-				<div>
-					<h2>Values</h2>
-					<ValuesInHtmlTable />
-				</div>
-				<div>
-					<h2>Pets Table</h2>
-					<SortedTableInHtmlTable
-						tableId="pets"
-						cellId="name"
-						limit={5}
-						sortOnClick={true}
-						className="sortedTable"
-						paginator={true}
-					/>
-				</div>
-				<Inspector />
-			</Provider>
+			<MantineProvider>
+				<Provider store={store}>
+					<div className="p-4">
+						<RecipeForm onSubmit={onSubmit} />
+					</div>
+					<Inspector />
+				</Provider>
+			</MantineProvider>
 		</StrictMode>
 	);
 };
